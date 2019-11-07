@@ -16,14 +16,18 @@ All the above steps should be in one function called process_image()
 # Done: Import OpenCV
 import cv2
 
-# TODO: Edit this function
+# Done: Edit this function
 def process_image(filename):
     img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
     #cv2.imshow("image",img)
     #cv2.waitKey(0)
     
     img = cv2.resize(img, (img.shape[1]/2, img.shape[0]/2))
-    #cv2.rectangle(img, Point(0,0), Point(img.shape[0],img.shape[1]), Scalar(255,255,255))
+    x1 = img.shape[1]/2 - 50
+    y1 = img.shape[0]/2 - 50
+    x2 = x1 + 100
+    y2 = y1 + 100
+    cv2.rectangle(img, (x1, y1), (x2, y2), (255,255,255))
     cv2.imwrite("geisel-bw-rectangle.jpg",img)
 
     return
@@ -33,7 +37,7 @@ def hello_world():
     print('Hello World!')
     return
 
-# TODO: Call process_image function.
+# Done: Call process_image function.
 def main():
     hello_world()
     process_image("geisel.jpg") 

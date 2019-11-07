@@ -41,20 +41,28 @@ Modify this code to write a LeNet with the following requirements:
     activation function: softmax
     output 10-dimensional vector (This is specified through units.)
 """
-# TODO: Import other layers as necessary. (Conv2D, MaxPooling2D)
-from keras.layers import Input, Dense
+# DONE: Import other layers as necessary. (Conv2D, MaxPooling2D)
+from keras.layers import Input, Dense, Conv2D, MaxPooling2D
 from keras.models import Model
 
-# TODO: Currently, sets input dimension to be 784x1. Change to 32x32x1
-inputs = Input(shape=(784,))
+# DONE: Currently, sets input dimension to be 784x1. Change to 32x32x1
+inputs = Input(shape=(32,32,1)) #This returns a tensor
 
 # A layer instance is callable on a tensor, and returns a tensor
 x = Dense(64, activation='relu')(inputs)
 x = Dense(64, activation='relu')(x)
 predictions = Dense(10, activation='softmax')(x)
 
+leNet = Conv2D(6, kernel_size=5, activation='sigmoid')(inputs)
+leNet = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(leNet)
+leNet = Conv2D(16, kernel_size=5, activation='sigmoid')(leNet)
+leNet = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(leNet)
+leNet = Conv2D(120, kernel_size=5, activation='sigmoid')(leNet)
+leNet = Dense(84, activation='tanh')(leNet)
+leNet = Dense(10, activation='softmax')(leNet)
+
 # This creates a model that includes the Input layer and three Dense layers
-model = Model(inputs=inputs, outputs=predictions)
+model = Model(inputs=inputs, outputs=leNet)#output was predictions
 
 # Prints model architecture
 model.summary()
