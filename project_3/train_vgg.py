@@ -41,7 +41,7 @@ def load_model():
     base_out = Flatten()(base_out)
     base_out = Dense(256)(base_out)
     base_out = Dropout(.5)(base_out)
-    base_out = Dense(NUM_CLASSES)(base_out)
+    base_out = Dense(NUM_CLASSES, activation="softmax")(base_out)
 
     model = Model(inputs=base_model.input, outputs=base_out)
     print('Build model')
