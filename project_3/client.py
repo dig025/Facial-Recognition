@@ -20,29 +20,30 @@ from picamera.array import PiRGBArray
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 
 # TODO: Declare path to face cascade
-CASCADE_PATH = ""
+CASCADE_PATH = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
 
 
 def request_from_server(img):
     """
     Sends image to server for classification.
-
-    :param img: Image array to be classified.
-    :returns: Returns a dictionary containing label and cofidence.
+:param img: Image array to be classified.  :returns: Returns a dictionary containing label and cofidence.
     """
     # URL or PUBLIC DNS to your server
-    URL = ""
+    URL = "http://13.77.170.8:8080/"
 
     # File name so that it can be temporarily stored.
     temp_image_name = 'temp.jpg'
 
     # TODO: Save image with name stored in 'temp_image_name'
+    cv2.imwrite(temp_image_name, img)
+    
 
     # Reopen image and encode in base64
     # Open binary file in read mode
     image = open(temp_image_name, 'rb')
     image_read = image.read()
-    image_64_encode = base64.encodestring(image_read)
+    image_64_encode = base64.b64encode(image_read)
+    image_64_string = image_64_encode.decode('utf-8')
 
     # Defining a params dict for the parameters to be sent to the API
     payload = {'image': image_64_encode}
@@ -59,6 +60,7 @@ def request_from_server(img):
 def main():
     # 1. Start running the camera.
     # TODO: Initialize face detector
+    face_cascade = cv2.CascadeClassifier(CASCADE_PATH)
 
     # Initialize camera and update parameters
     camera = PiCamera()
@@ -69,9 +71,9 @@ def main():
     rawCapture = PiRGBArray(camera, size=(width, height))
 
     # Warm up camera
-    print 'Let me get ready ... 2 seconds ...'
+    print('Let me get ready ... 2 seconds ...')
     time.sleep(2)
-    print 'Starting ...'
+    print('Starting ...')
 
     # 2. Detect a face, display it, and get confirmation from user.
     for frame in camera.capture_continuous(
@@ -85,6 +87,7 @@ def main():
 
         # TODO: Use face detector to get faces.
         # Be sure to save the faces in a variable called 'faces'
+        faces = face_cascade.detectMultiScale(frame)
 
         for (x, y, w, h) in faces:
             print('==================================')
@@ -100,6 +103,7 @@ def main():
                 print('Let\'s see who you are...')
 
                 # TODO: Get label and confidence using request_from_server
+                guess = request_from_server(frame)
 
                 print('New result found!')
 
@@ -108,6 +112,7 @@ def main():
                 # [OPTIONAL]: At this point you only have a number to display,
                 # you could add some extra code to convert your number to a
                 # name
+                print(guess)                
 
                 cv2.putText(frame, str(result_to_display), (10, 30), FONT, 1, (0, 255, 0), 2)
                 cv2.imshow('Face Image for Classification', frame)

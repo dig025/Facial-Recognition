@@ -22,8 +22,8 @@ import random
 
 IMG_H, IMG_W, NUM_CHANNELS = 224, 224, 3
 MEAN_PIXEL = np.array([104., 117., 123.]).reshape((1, 1, 3))
-TRAIN_DIR = '../Data/Train'  # DONE
-VAL_DIR = '../Data/Validation'  # DONE
+TRAIN_DIR = '../data/Train'  # DONE
+VAL_DIR = '../data/Validation'  # DONE
 NUM_EPOCHS = 5  # TODO
 BATCH_SIZE = 16
 NUM_CLASSES = 20  # TODO
@@ -73,6 +73,7 @@ def load_data(src_path):
         image_path = image_path_list[i]
         label = int(image_path.split('/')[-2])
         image = cv2.imread(image_path, 1)
+        print(image_path)
         image = cv2.resize(image, (IMG_H, IMG_W)) - MEAN_PIXEL
         X[i, :, :, :] = image
         Y[i, :] = label
